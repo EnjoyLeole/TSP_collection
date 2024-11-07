@@ -1,3 +1,5 @@
+from time import time
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -15,7 +17,7 @@ def generate_random_customer(n_customer, width=1000):
     return customers
 
 
-def draw_path(best_path, iteration=None, best_record=None):
+def draw_path(best_path, iteration=None, best_record=None, name=''):
     # 加上一行因为会回到起点
     fig, axs = plt.subplots(2, 1, sharex=False, sharey=False)
     axs[0].scatter(best_path[:, 0], best_path[:, 1])
@@ -27,17 +29,21 @@ def draw_path(best_path, iteration=None, best_record=None):
         # best_record = model.best_record
         axs[1].plot(iterations, best_record)
         axs[1].set_title('收敛曲线')
-    plt.show()
+    plt.savefig(f'img/GA_{name}.png')
+    # plt.show()
 
 
 def efficiency():
     lst = []
-    for i in range(30):
+    for i in range(25):
+        ts = time()
         nc = 10 * (i + 1)
         data = generate_random_customer(nc, width=1000)
         model = GA(num_city=data.shape[0], num_total=25, iteration=500, data=data.copy())
         path, path_len = model.run()
-        print(nc, path_len / nc)
+        draw_path(path, model.iteration, model.best_record, name=nc)
+
+        print(nc, path_len / nc, 'time cost:', time() - ts)
         lst += [[nc, path_len / nc]]
     
     df=pd.DataFrame(lst)
