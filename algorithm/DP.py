@@ -97,7 +97,7 @@ def read_tsp(path):
     return data
 
 
-data = read_tsp('data/st70.tsp')
+data = read_tsp('../data/st70.tsp')
 data = np.array(data)
 data = data[:, 1:]
 
